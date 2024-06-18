@@ -1,0 +1,36 @@
+<Project>
+    <PropertyGroup>
+        <LangVersion>12.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);CS1998;CS1591</NoWarn>
+        <WarningsAsErrors>$(WarningsAsErrors);CS0114</WarningsAsErrors>
+
+        <Authors>BytePlatform Contributors</Authors>
+        <Version>1.0.0-pre-02</Version>
+        <Description>Byte is a platform for building easy API.</Description>
+        <RepositoryUrl>https://github.com/SmartClouds/BytePlatform</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
+        <Company>SmartClouds.co</Company>
+        <Copyright>MIT License</Copyright>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageProjectUrl>https://www.smartclouds.co</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageIconUrl />
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\icon.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\..\LICENSE">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+    </ItemGroup>
+    
+
+</Project>
