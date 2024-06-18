@@ -5,10 +5,8 @@
 Byte is a platform for building easy API.
 
 
-
-
 | Package | nuget |
-|:-:|:--:|:--:|:--:|:--:|:--:|
+|:-:|:--:|
 | BytePlatform.Shared | [![NuGet Version](https://img.shields.io/nuget/v/BytePlatform.Shared.svg?style=flat)](https://www.nuget.org/packages/BytePlatform.Shared/)
 
 ## Available for
