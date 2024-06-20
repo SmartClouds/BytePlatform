@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace BytePlatform.Server.Extensions;
+﻿namespace BytePlatform.Server.Extensions;
 
 public static class ObjectExtensions
 {

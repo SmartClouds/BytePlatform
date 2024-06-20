@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using BytePlatform.Server.Data.Contracts;
 using BytePlatform.Server.Models;
+using BytePlatform.Shared.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace BytePlatform.Server.Data.Implementations;

@@ -292,10 +292,10 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
         var tableNameRegex = new Regex(@"(?<=dbo.)(.*?)(?=')");
         string extractedEntityName = tableNameRegex.Match(input).Value;
 
-        int removeLenght = extractedEntityName.Length > 6 ? extractedEntityName.Length - 5 : extractedEntityName.Length - 3;
+        int removeLength = extractedEntityName.Length > 6 ? extractedEntityName.Length - 5 : extractedEntityName.Length - 3;
 
         //Approximate Entity Name
-        return extractedEntityName.Remove(removeLenght);
+        return extractedEntityName.Remove(removeLength);
     }
 
     #endregion Utilities
