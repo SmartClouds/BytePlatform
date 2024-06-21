@@ -5,14 +5,19 @@
 Byte is a platform for building easy API.
 
 
-| Package | nuget |
+| Package | Nuget |
 |:-:|:--:|
+| BytePlatform.Server | [![NuGet Version](https://img.shields.io/nuget/v/BytePlatform.Server.svg?style=flat)](https://www.nuget.org/packages/BytePlatform.Server/)
 | BytePlatform.Shared | [![NuGet Version](https://img.shields.io/nuget/v/BytePlatform.Shared.svg?style=flat)](https://www.nuget.org/packages/BytePlatform.Shared/)
 
 ## Available for
 * .Net 8.0
 
 # Install
+```
+Install-Package BytePlatform.Server
+```
+
 ```
 Install-Package BytePlatform.Shared
 ```
