@@ -7,10 +7,6 @@ public static class LinqExtensions
     /// <summary>
     /// https://extensionmethod.net/csharp/ienumerable-t/whereif
     /// </summary>
-    public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool predicate, Expression<Func<T, bool>> itemPredicate)
-    {
-        return predicate ? query.Where(itemPredicate) : query;
-    }
 
     public static IQueryable<T> OrderByIf<T>(this IQueryable<T> query, bool predicate, Expression<Func<T, object>> keySelector)
     {
