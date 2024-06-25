@@ -9,9 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="BytePlatform.Shared" Version="1.0.0-pre-03" />
+        <PackageReference Include="BytePlatform.Shared" Version="1.0.0-pre-05" />
         <PackageReference Include="Humanizer.Core" Version="2.14.1" />
         <PackageReference Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="8.0.6" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     </ItemGroup>
