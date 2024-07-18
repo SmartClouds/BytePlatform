@@ -128,7 +128,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
             typeof(UserClaimEntity<TKey>)
         };
 
-        IEnumerable<Type> entityTypes = typeof(UserEntity<TKey>)
+        IEnumerable<Type> entityTypes = typeof(TUser)
             .Assembly
             .GetExportedTypes()
             .Where(type => type.IsClass &&
