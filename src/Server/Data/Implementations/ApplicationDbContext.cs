@@ -53,7 +53,59 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
     {
-        throw new InvalidOperationException("Call SaveChangesAsync instead.");
+        try
+        {
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+        catch (DbUpdateConcurrencyException exception)
+        {
+            throw new ConflictException(BytePlatformStrings.General.UpdateConcurrencyException, exception);
+        }
+        // https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-events-and-errors?view=sql-server-ver15
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException sqlException && sqlException.Class == 14 && sqlException.Number == 2601)
+        {
+            var innerExceptionMessage = ex.InnerException.Message;
+
+            string approximateEntityName = GetApproximateEntityName(innerExceptionMessage);
+
+            var involvedColumnNames = GetInvolvedColumnNames(innerExceptionMessage);
+
+            string[] duplicateKeyValueItems = GetDuplicateKeyValueItems(innerExceptionMessage);
+
+            var entity = ChangeTracker.Entries()
+                .Where(e => e.State != EntityState.Unchanged)
+                .First(e => e.Metadata.DisplayName().StartsWith(approximateEntityName))
+                .Entity;
+
+            var possiblePropNames = GetPossiblePropertyNames(entity, duplicateKeyValueItems);
+
+            var finalPropNames = possiblePropNames
+                                                .Where(p => involvedColumnNames.Contains(p)) // To ensure that there is no contradiction in the result
+                                                .Where(p => Guid.TryParse(p, out var _) is false) // To remove ids (Guid)
+                                                .ToArray();
+
+            // from here onwards needs to be discussed
+            if (finalPropNames.Length > 0)
+            {
+                throw new ResourceValidationException(BytePlatformStrings.General.PropertyAlreadyExists, new ErrorResourcePayload
+                {
+                    ResourceTypeName = entity.GetType().FullName,
+                    Details = finalPropNames.Select(p => new PropertyErrorResourceCollection
+                    {
+                        Name = p,
+                        Errors =
+                        [
+                            new() {
+                                Key = BytePlatformStrings.General.PropertyAlreadyExists,
+                                Message = null
+                            }
+                        ]
+                    }).ToList()
+                });
+            }
+
+            throw;
+        }
     }
 
     public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = new CancellationToken())
@@ -64,7 +116,6 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
         }
         catch (DbUpdateConcurrencyException exception)
         {
-            //TODO
             throw new ConflictException(BytePlatformStrings.General.UpdateConcurrencyException, exception);
         }
         // https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-events-and-errors?view=sql-server-ver15
