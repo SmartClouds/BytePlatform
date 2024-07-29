@@ -30,4 +30,11 @@ public static class StringExtensions
             ? string.IsNullOrWhiteSpace(value)
             : string.IsNullOrEmpty(value);
     }
+
+    public static string? TrimIfHasValue(this string? value)
+    {
+        return value.HasNoValue()
+            ? value
+            : value!.Trim();
+    }
 }
