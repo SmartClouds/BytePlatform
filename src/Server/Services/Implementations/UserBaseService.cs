@@ -80,7 +80,7 @@ public abstract class UserBaseService<TUserEntity, TEntity, TKey, TStrings> : Ba
 
 
     protected abstract string GetPassword();
-    protected abstract void MapEntityOtherEntity(TEntity entitySource, TEntity entityDestenition);
+    protected abstract void MapEntityOtherEntity(TEntity entitySource, TEntity entityDestination);
 
 
     protected override void Dispose(bool disposing)
