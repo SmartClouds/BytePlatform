@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using BytePlatform.Server.Data.Contracts;
-using BytePlatform.Server.Extensions;
 using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Server.Services.Helpers;

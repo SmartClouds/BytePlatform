@@ -3,7 +3,7 @@
 namespace BytePlatform.Server.Services.Implementations;
 public class DataContainerService<TKey> : IDataContainerService<TKey> where TKey : Enum
 {
-    private readonly IDictionary<TKey, object> keyValues = new Dictionary<TKey, object> { };
+    private readonly IDictionary<TKey, object> keyValues = new Dictionary<TKey, object>();
     public T Get<T>(TKey key)
     {
         if (keyValues.ContainsKey(key))
