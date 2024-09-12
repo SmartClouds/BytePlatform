@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using BytePlatform.Server.Data.Contracts;
+using BytePlatform.Server.Infrastructure.Mapper;
 using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Server.Services.Helpers;
@@ -13,13 +14,14 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
 {
     #region Fields
     private bool _disposed;
-    protected readonly IRepository<TEntity, TKey> _repository;
-    protected readonly ILogger _logger;
     #endregion
 
     #region Properties
-    protected IRepository<TEntity, TKey> Repository => _repository;
-    protected ServiceResult ServiceResult { get; private set; }
+    protected IRepository<TEntity, TKey> Repository { get; init; }
+    protected ILogger Logger { get; init; }
+    protected IStringLocalizer<TStrings> Localizer { get; init; }
+
+    protected ServiceResult ServiceResult { get; init; }
 
     protected EntityValidationResult ValidationResult
     {
@@ -36,7 +38,6 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     public bool Succeeded => !ValidationResult.Errors.Any();
     public IList<ValidationResult> Errors => ValidationResult.Errors;
 
-    protected readonly IStringLocalizer<TStrings> Localizer;
 
     protected virtual string? GetClaim => null;
     protected virtual string? AddClaim => null;
@@ -47,8 +48,8 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     #region Ctor
     protected BaseService(IRepository<TEntity, TKey> repository, ILoggerFactory loggerFactory, Type logType, IStringLocalizer<TStrings> localizer)
     {
-        _logger = loggerFactory.CreateLogger(logType);
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        Logger = loggerFactory.CreateLogger(logType);
+        Repository = repository ?? throw new ArgumentNullException(nameof(repository));
         ServiceResult = new ServiceResult();
         Localizer = localizer;
     }
@@ -61,7 +62,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
         if (await EnsureValidationAndAccessAsync(OperationKind.Get, cancellationToken).ConfigureAwait(false))
         {
             var predicate = await GetFilterAsync(cancellationToken).ConfigureAwait(false);
-            return _repository.TableNoTracking.WhereIf(predicate is not null, predicate!);
+            return Repository.TableNoTracking.WhereIf(predicate is not null, predicate!);
         }
         else
         {
@@ -71,7 +72,9 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
 
     public virtual async ValueTask<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+        var entity = await Repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
+
+        entity.ToDto<TDto>()
 
         if (entity is null)
             return entity;
@@ -117,7 +120,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
 
     public virtual async ValueTask RemoveAsync(TKey key, CancellationToken cancellationToken)
     {
-        var entity = await _repository.GetByIdAsync(key, cancellationToken);
+        var entity = await Repository.GetByIdAsync(key, cancellationToken);
         if (entity is not null)
         {
             if (await EnsureValidationAndAccessAsync(OperationKind.Remove, entity, cancellationToken).ConfigureAwait(false) is false)
@@ -214,7 +217,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     protected async ValueTask<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
     {
         return await EnsureValidationAndAccessAsync(OperationKind.Get, cancellationToken).ConfigureAwait(false)
-                && await _repository.ExistsAsync(predicate, cancellationToken).ConfigureAwait(false);
+                && await Repository.ExistsAsync(predicate, cancellationToken).ConfigureAwait(false);
     }
 
     #region CRUD Events
@@ -232,7 +235,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     /// </summary>
     protected virtual Task ExecuteAddAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        return _repository.InsertAsync(entity, cancellationToken);
+        return Repository.InsertAsync(entity, cancellationToken);
     }
 
     /// <summary>
@@ -256,7 +259,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     /// </summary>
     protected virtual Task ExecuteAddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken)
     {
-        return _repository.InsertAsync(entities, cancellationToken);
+        return Repository.InsertAsync(entities, cancellationToken);
     }
 
     /// <summary>
@@ -280,7 +283,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     /// </summary>
     protected virtual Task ExecuteEditAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        return _repository.UpdateAsync(entity, cancellationToken);
+        return Repository.UpdateAsync(entity, cancellationToken);
     }
 
     /// <summary>
@@ -303,7 +306,7 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     /// </summary>
     protected virtual Task ExecuteRemoveAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        return _repository.DeleteAsync(entity, cancellationToken);
+        return Repository.DeleteAsync(entity, cancellationToken);
     }
 
     /// <summary>

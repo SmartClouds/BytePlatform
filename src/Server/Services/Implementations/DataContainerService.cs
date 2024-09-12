@@ -3,12 +3,12 @@
 namespace BytePlatform.Server.Services.Implementations;
 public class DataContainerService<TKey> : IDataContainerService<TKey> where TKey : Enum
 {
-    private readonly IDictionary<TKey, object> keyValues = new Dictionary<TKey, object>();
+    private readonly IDictionary<TKey, object> _keyValues = new Dictionary<TKey, object>();
     public T Get<T>(TKey key)
     {
-        if (keyValues.ContainsKey(key))
+        if (_keyValues.ContainsKey(key))
         {
-            return (T)keyValues[key];
+            return (T)_keyValues[key];
         }
         else
         {
@@ -17,13 +17,13 @@ public class DataContainerService<TKey> : IDataContainerService<TKey> where TKey
     }
     public void Set<T>(TKey key, T value)
     {
-        if (keyValues.ContainsKey(key))
+        if (_keyValues.ContainsKey(key))
         {
-            keyValues[key] = value!;
+            _keyValues[key] = value!;
         }
         else
         {
-            keyValues.Add(key, value!);
+            _keyValues.Add(key, value!);
         }
     }
 }

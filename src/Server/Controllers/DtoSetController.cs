@@ -1,5 +1,4 @@
-﻿using BytePlatform.Server.Infrastructure.Mapper;
-using BytePlatform.Server.Models;
+﻿using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Shared.Dtos;
 using BytePlatform.Shared.Exceptions;
@@ -56,7 +55,7 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     public virtual async Task<IQueryable<TDto>> Get(CancellationToken cancellationToken)
     {
         var query = await EntityService.GetAllAsync(cancellationToken).ConfigureAwait(false);
-        return query.ToDto<TDto>();
+        return ToDto(query);
     }
 
     [HttpGet("{id:guid}")]
@@ -67,7 +66,7 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         if (entity is null)
             throw new ResourceNotFoundException(Localizer[BytePlatformStrings.General.ItemCouldNotBeFound]);
 
-        return entity.ToDto<TDto>();
+        return ToDto(entity);
     }
 
     [HttpGet]
@@ -93,11 +92,11 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     [HttpPost]
     public virtual async Task<TDto> Create(TDtoAdd dto, CancellationToken cancellationToken)
     {
-        var entity = dto.ToEntity<TEntity, TDtoAdd>();
+        var entity = ToEntity<TDtoAdd>(dto);
 
         await EntityService.AddAsync(entity, cancellationToken).ConfigureAwait(false);
 
-        return entity.ToDto<TDto>();
+        return ToDto(entity);
     }
 
     [HttpPut("{id:guid}")]
@@ -106,11 +105,11 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         if (EqualityComparer<TKey>.Default.Equals(id, dto.Id) is false)
             throw new ResourceNotFoundException(Localizer[BytePlatformStrings.General.ItemCouldNotBeFound]);
 
-        var entity = dto.ToEntity<TEntity, TDtoEdit>();
+        var entity = ToEntity<TDtoEdit>(dto);
 
         await EntityService.EditAsync(entity, cancellationToken).ConfigureAwait(false);
 
-        return entity.ToDto<TDto>();
+        return ToDto(entity);
     }
 
     [HttpDelete("{id:guid}")]
@@ -118,4 +117,10 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     {
         await EntityService.RemoveAsync(id, cancellationToken).ConfigureAwait(false);
     }
+
+
+
+    protected abstract IQueryable<TDto> ToDto(IQueryable<TEntity> query);
+    protected abstract TDto ToDto(TEntity entity);
+    protected abstract TEntity ToEntity<T>(T entity);
 }
