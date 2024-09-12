@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using BytePlatform.Server.Data.Contracts;
-using BytePlatform.Server.Infrastructure.Mapper;
 using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Server.Services.Helpers;
@@ -73,8 +72,6 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
     public virtual async ValueTask<TEntity?> GetByIdAsync(TKey id, CancellationToken cancellationToken)
     {
         var entity = await Repository.GetByIdAsync(id, cancellationToken).ConfigureAwait(false);
-
-        entity.ToDto<TDto>()
 
         if (entity is null)
             return entity;

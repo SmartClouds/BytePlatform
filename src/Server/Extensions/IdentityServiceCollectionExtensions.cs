@@ -11,7 +11,7 @@ public static class IdentityServiceCollectionExtensions
 
     public static IdentityBuilder AddRoleManager<TKey, TRole>(this IdentityBuilder identityBuilder) where TRole : class
     {
-        return identityBuilder.AddUserManager<ApplicationRoleManager<TKey, TRole>>();
+        return identityBuilder.AddRoleManager<ApplicationRoleManager<TKey, TRole>>();
     }
 
     public static IdentityBuilder AddUserAndRoleManager<TKey, TUser, TRole>(this IdentityBuilder identityBuilder)
