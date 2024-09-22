@@ -36,4 +36,9 @@ public static class ClaimsPrincipalExtensions
     {
         return claimsPrincipal?.Identity?.IsAuthenticated is true;
     }
+
+    public static string? GetSessionId(this ClaimsPrincipal claimsPrincipal)
+    {
+        return claimsPrincipal.FindFirst("session-id")?.Value;
+    }
 }
