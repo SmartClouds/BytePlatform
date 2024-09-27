@@ -1,7 +1,9 @@
 ﻿using System.Data.SqlClient;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
+using BytePlatform.Server.Data.Configurations;
 using BytePlatform.Server.Data.Contracts;
 using BytePlatform.Server.Extensions;
 using BytePlatform.Server.Models;
@@ -44,11 +46,16 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
 
         ConfigureCascades(builder);
 
-        UseSequentialGuidForIds(builder);
-
         RegisterIsArchivedGlobalQueryFilter(builder);
 
         SeedDatabase(builder);
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Conventions.Add(_ => new SqlServerPrimaryKeySequentialGuidDefaultValueConvention());
+
+        base.ConfigureConventions(configurationBuilder);
     }
 
     public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -285,17 +292,6 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
 
         foreach (IMutableForeignKey fk in cascadeFKs)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
-    }
-
-    protected virtual void UseSequentialGuidForIds(ModelBuilder builder)
-    {
-        foreach (IMutableEntityType entity in builder.Model.GetEntityTypes())
-        {
-            IMutableProperty? property = entity.GetProperties().SingleOrDefault(p => p.Name.Equals(nameof(IEntity<Guid>.Id), StringComparison.OrdinalIgnoreCase));
-
-            if (property is not null && property.ClrType == typeof(Guid))
-                property.SetDefaultValueSql("NewSequentialID()");
-        }
     }
 
     protected virtual void SeedDatabase(ModelBuilder builder)
