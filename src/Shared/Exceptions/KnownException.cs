@@ -2,7 +2,7 @@
 
 namespace BytePlatform.Shared.Exceptions;
 
-public abstract class KnownException : Exception
+public abstract partial class KnownException : Exception
 {
     public KnownException(string message)
         : base(message)

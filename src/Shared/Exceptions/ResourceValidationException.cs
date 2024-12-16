@@ -1,10 +1,10 @@
-﻿using BytePlatform.Shared.Resources;
+﻿using System.Net;
+using BytePlatform.Shared.Resources;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace BytePlatform.Shared.Exceptions;
 
-public class ResourceValidationException : RestException
+public partial class ResourceValidationException : RestException
 {
     public ResourceValidationException(params LocalizedString[] errorMessages)
     : this([("*", errorMessages)])
@@ -54,7 +54,7 @@ public class ResourceValidationException : RestException
         Payload = payload;
     }
 
-    public ErrorResourcePayload Payload { get; set; }
+    public ErrorResourcePayload Payload { get; set; } = new ErrorResourcePayload();
 
     public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 }

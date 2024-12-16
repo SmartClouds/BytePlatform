@@ -1,10 +1,10 @@
-﻿using BytePlatform.Shared.Resources;
+﻿using System.Net;
+using BytePlatform.Shared.Resources;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace BytePlatform.Shared.Exceptions;
 
-public class UnauthorizedException : RestException
+public partial class UnauthorizedException : RestException
 {
     public UnauthorizedException()
         : base(BytePlatformStrings.ExceptionError.UnauthorizedException)

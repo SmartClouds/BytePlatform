@@ -1,7 +1,7 @@
 ﻿using BytePlatform.Shared.Resources;
 
 namespace BytePlatform.Shared.Exceptions;
-public class ServerConnectionException : KnownException
+public partial class ServerConnectionException : KnownException
 {
     public ServerConnectionException()
         : base(BytePlatformStrings.ExceptionError.ServerConnectionException)

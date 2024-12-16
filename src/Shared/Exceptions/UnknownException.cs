@@ -2,7 +2,7 @@
 
 namespace BytePlatform.Shared.Exceptions;
 
-public class UnknownException : Exception
+public partial class UnknownException : Exception
 {
     public UnknownException()
         : base(BytePlatformStrings.ExceptionError.UnknownException)

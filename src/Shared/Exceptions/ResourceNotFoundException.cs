@@ -1,10 +1,10 @@
-﻿using BytePlatform.Shared.Resources;
+﻿using System.Net;
+using BytePlatform.Shared.Resources;
 using Microsoft.Extensions.Localization;
-using System.Net;
 
 namespace BytePlatform.Shared.Exceptions;
 
-public class ResourceNotFoundException : RestException
+public partial class ResourceNotFoundException : RestException
 {
     public ResourceNotFoundException()
         : base(BytePlatformStrings.ExceptionError.ResourceNotFoundException)
