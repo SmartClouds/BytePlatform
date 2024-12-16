@@ -4,11 +4,12 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <NoWarn>$(NoWarn);CS1998;CS1591</NoWarn>
         <WarningsAsErrors>$(WarningsAsErrors);CS0114</WarningsAsErrors>
 
         <Authors>BytePlatform Contributors</Authors>
-        <Version>1.0.0-pre-16</Version>
+        <Version>1.0.0-pre-17</Version>
         <Description>Byte is a platform for building easy API.</Description>
         <RepositoryUrl>https://github.com/SmartClouds/BytePlatform</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
