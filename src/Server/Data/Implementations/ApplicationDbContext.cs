@@ -1,7 +1,6 @@
 ﻿using System.Data.SqlClient;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using BytePlatform.Server.Data.Configurations;
 using BytePlatform.Server.Data.Contracts;
@@ -14,6 +13,7 @@ using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BytePlatform.Server.Data.Implementations;
 
@@ -43,6 +43,8 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
         AddSequentialGuidForIds(builder);
 
         ConfigureDecimalPrecision(builder);
+
+        ConcurrencyStamp(builder);
 
         ConfigureCascades(builder);
 
@@ -343,6 +345,21 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
 
         //Approximate Entity Name
         return extractedEntityName.Remove(removeLength);
+    }
+
+    private void ConcurrencyStamp(ModelBuilder modelBuilder)
+    {
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties()
+                .Where(p => p.Name is "ConcurrencyStamp" && p.PropertyInfo?.PropertyType == typeof(byte[])))
+            {
+                var builder = new PropertyBuilder(property);
+                builder.IsConcurrencyToken()
+                    .IsRowVersion();
+
+            }
+        }
     }
 
     #endregion Utilities
