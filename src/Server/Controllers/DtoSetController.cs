@@ -1,4 +1,5 @@
-﻿using BytePlatform.Server.Models;
+﻿using BytePlatform.Server.Mappers;
+using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Shared.Dtos;
 using BytePlatform.Shared.Exceptions;
@@ -10,44 +11,49 @@ using Microsoft.Extensions.Localization;
 
 namespace BytePlatform.Server.Controllers;
 
-public abstract partial class DtoSetController<TKey, TDto, TEntity, TResourceSettings> : DtoSetController<TKey, TDto, TEntity, IBaseService<TEntity, TKey>, TResourceSettings>
+public abstract partial class DtoSetController<TKey, TDto, TEntity, TMapper, TResourceSettings> : DtoSetController<TKey, TDto, TEntity, IBaseService<TEntity, TKey>, TMapper, TResourceSettings>
     where TDto : IDto<TKey>
     where TEntity : IEntity
+    where TMapper : IByteMapper<TDto, TEntity>
 {
-    protected DtoSetController(IBaseService<TEntity, TKey> entityService, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
-        : base(entityService, localizer, userInformationProvider)
+    protected DtoSetController(IBaseService<TEntity, TKey> entityService, TMapper mapper, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
+        : base(entityService, mapper, localizer, userInformationProvider)
     {
     }
 }
 
-public abstract partial class DtoSetController<TKey, TDto, TEntity, TService, TResourceSettings> : DtoSetController<TKey, TDto, TDto, TDto, TEntity, TService, TResourceSettings>
+public abstract partial class DtoSetController<TKey, TDto, TEntity, TService, TMapper, TResourceSettings> : DtoSetController<TKey, TDto, TDto, TDto, TEntity, TService, TMapper, TResourceSettings>
     where TDto : IDto<TKey>
     where TEntity : IEntity
     where TService : IBaseService<TEntity, TKey>
+    where TMapper : IByteMapper<TDto, TEntity>
 {
-    protected DtoSetController(TService entityService, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
-        : base(entityService, localizer, userInformationProvider)
+    protected DtoSetController(TService entityService, TMapper mapper, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
+        : base(entityService, mapper, localizer, userInformationProvider)
     {
     }
 }
 
 [Route("api/[controller]/[action]")]
 [ApiController]
-public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TEntity, TService, TResourceSettings> : ControllerBase
+public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TEntity, TService, TMapper, TResourceSettings> : ControllerBase
     where TDto : IDto<TKey>
     where TDtoAdd : IDto<TKey>
     where TDtoEdit : IDto<TKey>
     where TEntity : IEntity
     where TService : IBaseService<TEntity, TKey>
+    where TMapper : IByteMapper<TDto, TEntity>
 {
+    protected readonly TMapper Mapper;
     protected readonly TService EntityService;
     protected readonly IStringLocalizer<TResourceSettings> Localizer;
     protected readonly IUserInformationProvider<TKey> UserInformationProvider;
 
-    protected DtoSetController(TService entityService, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
+    protected DtoSetController(TService entityService, TMapper mapper, IStringLocalizer<TResourceSettings> localizer, IUserInformationProvider<TKey> userInformationProvider)
     {
-        EntityService = entityService;
+        Mapper = mapper;
         Localizer = localizer;
+        EntityService = entityService;
         UserInformationProvider = userInformationProvider;
     }
 
@@ -55,7 +61,7 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     public virtual async Task<IQueryable<TDto>> Get(CancellationToken cancellationToken)
     {
         var query = await EntityService.GetAllAsync(cancellationToken).ConfigureAwait(false);
-        return ToDto(query);
+        return Mapper.ToDto(query);
     }
 
     [HttpGet("{id:guid}")]
@@ -66,7 +72,7 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         if (entity is null)
             throw new ResourceNotFoundException(Localizer[BytePlatformStrings.General.ItemCouldNotBeFound]);
 
-        return ToDto(entity);
+        return Mapper.ToDto(entity);
     }
 
     [HttpGet]
@@ -92,11 +98,11 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     [HttpPost]
     public virtual async Task<TDto> Create(TDtoAdd dto, CancellationToken cancellationToken)
     {
-        var entity = ToEntity<TDtoAdd>(dto);
+        var entity = Mapper.ToEntity(dto);
 
         await EntityService.AddAsync(entity, cancellationToken).ConfigureAwait(false);
 
-        return ToDto(entity);
+        return Mapper.ToDto(entity);
     }
 
     [HttpPut("{id:guid}")]
@@ -105,11 +111,11 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         if (EqualityComparer<TKey>.Default.Equals(id, dto.Id) is false)
             throw new ResourceNotFoundException(Localizer[BytePlatformStrings.General.ItemCouldNotBeFound]);
 
-        var entity = ToEntity<TDtoEdit>(dto);
+        var entity = Mapper.ToEntity(dto);
 
         await EntityService.EditAsync(entity, cancellationToken).ConfigureAwait(false);
 
-        return ToDto(entity);
+        return Mapper.ToDto(entity);
     }
 
     [HttpDelete("{id:guid}")]
@@ -117,10 +123,4 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
     {
         await EntityService.RemoveAsync(id, cancellationToken).ConfigureAwait(false);
     }
-
-
-
-    protected abstract IQueryable<TDto> ToDto(IQueryable<TEntity> query);
-    protected abstract TDto ToDto(TEntity entity);
-    protected abstract TEntity ToEntity<T>(T entity);
 }

@@ -1,5 +1,6 @@
 ﻿using BytePlatform.Server.Data.Contracts;
 using BytePlatform.Server.Data.Implementations;
+using BytePlatform.Server.Mappers;
 using BytePlatform.Server.Models.Identity;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Server.Services.Implementations;
@@ -36,6 +37,16 @@ public static class DependencyRegistrar
                 .AddClasses(classes => classes.AssignableTo(typeof(IBaseService<,>)))
                 .AsMatchingInterface()
                 .WithScopedLifetime();
+        });
+
+        // mapper
+        services.Scan(scan =>
+        {
+            scan
+                .FromAssemblyOf<TAssembly>()
+                .AddClasses(classes => classes.AssignableTo(typeof(IByteMapper<,>)))
+                .AsMatchingInterface()
+                .WithTransientLifetime();
         });
 
         services.AddScoped(typeof(IUserInformationProvider<>), typeof(UserInformationProvider<>));
