@@ -3,7 +3,7 @@ using BytePlatform.Server.Models;
 
 namespace System.Collections.Generic;
 
-public static class LinqExtensions
+internal static class LinqExtensions
 {
     public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool predicate, Expression<Func<T, bool>> where) where T : IEntity
     {
@@ -11,5 +11,15 @@ public static class LinqExtensions
             return query.Where(where);
 
         return query;
+    }
+
+    public static IQueryable<T> SkipIf<T>(this IQueryable<T> query, bool predicate, int count)
+    {
+        return predicate ? query.Skip(count) : query;
+    }
+
+    public static IQueryable<T> TakeIf<T>(this IQueryable<T> query, bool predicate, int count)
+    {
+        return predicate ? query.Take(count) : query;
     }
 }

@@ -83,11 +83,8 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         {
             var totalCount = await resultQuery.LongCountAsync(cancellationToken).ConfigureAwait(false);
 
-            if (options.Skip is not null)
-                resultQuery = resultQuery.Skip(options.Skip.Value);
-
-            if (options.Top is not null)
-                resultQuery = resultQuery.Take(options.Top.Value);
+            resultQuery = resultQuery.SkipIf(options.Skip is not null, options.Skip!.Value)
+                                     .TakeIf(options.Top is not null, options.Top!.Value);
 
             return new PagedResult<TDto>(await resultQuery.ToArrayAsync(cancellationToken).ConfigureAwait(false), totalCount);
         }
