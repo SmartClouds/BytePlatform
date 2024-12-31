@@ -9,7 +9,7 @@
         <WarningsAsErrors>$(WarningsAsErrors);CS0114</WarningsAsErrors>
 
         <Authors>BytePlatform Contributors</Authors>
-        <Version>1.0.0-pre-23</Version>
+        <Version>1.0.0-pre-24</Version>
         <Description>Byte is a platform for building easy API.</Description>
         <RepositoryUrl>https://github.com/SmartClouds/BytePlatform</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
