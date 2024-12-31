@@ -26,6 +26,7 @@ public static class BytePlatformStrings
     public static class ValidationError
     {
         public const string EmailAddressAttribute = $"{nameof(BytePlatformStrings)}_{nameof(ValidationError)}_{nameof(EmailAddressAttribute)}";
+        public const string PhoneAttribute = $"{nameof(BytePlatformStrings)}_{nameof(ValidationError)}_{nameof(PhoneAttribute)}";
         public const string RequiredAttribute = $"{nameof(BytePlatformStrings)}_{nameof(ValidationError)}_{nameof(RequiredAttribute)}";
         public const string MinLengthAttribute = $"{nameof(BytePlatformStrings)}_{nameof(ValidationError)}_{nameof(MinLengthAttribute)}";
         public const string CompareAttribute = $"{nameof(BytePlatformStrings)}_{nameof(ValidationError)}_{nameof(CompareAttribute)}";
