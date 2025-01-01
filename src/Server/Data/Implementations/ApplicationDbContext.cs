@@ -10,6 +10,7 @@ using BytePlatform.Server.Models.Identity;
 using BytePlatform.Shared.Exceptions;
 using BytePlatform.Shared.Resources;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -17,10 +18,25 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace BytePlatform.Server.Data.Implementations;
 
-public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbContext<TUser, TRole, TKey, UserClaimEntity<TKey>, UserRoleEntity<TKey>, UserLoginEntity<TKey>, RoleClaimEntity<TKey>, UserTokenEntity<TKey>>, IDataProtectionKeyContext, IDbContext
+public abstract class ApplicationDbContext<TKey, TUser, TRole> : ApplicationDbContext<TKey, TUser, TRole, UserClaimEntity<TKey>, UserRoleEntity<TKey>, UserLoginEntity<TKey>, RoleClaimEntity<TKey>, UserTokenEntity<TKey>>
     where TKey : IEquatable<TKey>
     where TUser : UserEntity<TKey>
     where TRole : RoleEntity<TKey>
+{
+    protected ApplicationDbContext(DbContextOptions options) : base(options)
+    {
+    }
+}
+
+public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken> : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>, IDataProtectionKeyContext, IDbContext
+    where TKey : IEquatable<TKey>
+    where TUser : UserEntity<TKey>
+    where TRole : RoleEntity<TKey>
+    where TUserClaim : UserClaimEntity<TKey>
+    where TUserRole : UserRoleEntity<TKey>
+    where TUserLogin : UserLoginEntity<TKey>
+    where TRoleClaim : RoleClaimEntity<TKey>
+    where TUserToken : UserTokenEntity<TKey>
 {
     protected abstract string AssemblyName { get; }
     public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
@@ -208,11 +224,11 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole> : IdentityDbConte
         //Config Asp Identity table name
         builder.Entity<TUser>().ToTable("Users");
         builder.Entity<TRole>().ToTable("Roles");
-        builder.Entity<UserRoleEntity<TKey>>().ToTable("UserRoles");
-        builder.Entity<RoleClaimEntity<TKey>>().ToTable("RoleClaims");
-        builder.Entity<UserLoginEntity<TKey>>().ToTable("UserLogins");
-        builder.Entity<UserTokenEntity<TKey>>().ToTable("UserTokens");
-        builder.Entity<UserClaimEntity<TKey>>().ToTable("UserClaims");
+        builder.Entity<TUserRole>().ToTable("UserRoles");
+        builder.Entity<TRoleClaim>().ToTable("RoleClaims");
+        builder.Entity<TUserLogin>().ToTable("UserLogins");
+        builder.Entity<TUserToken>().ToTable("UserTokens");
+        builder.Entity<TUserClaim>().ToTable("UserClaims");
 
         builder.Entity<UserClaimEntity<TKey>>(b =>
         {
