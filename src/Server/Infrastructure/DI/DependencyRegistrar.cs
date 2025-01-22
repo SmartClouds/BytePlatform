@@ -20,6 +20,21 @@ public static class DependencyRegistrar
         where TRole : RoleEntity<TKey>
         where TDataContainerKey : Enum
     {
+        return AddServerServices<TAssembly, TDbContext, TKey, TUser, TRole, UserClaimEntity<TKey>, UserRoleEntity<TKey>, UserLoginEntity<TKey>, RoleClaimEntity<TKey>, UserTokenEntity<TKey>, TDataContainerKey>(services);
+    }
+
+    public static IServiceCollection AddServerServices<TAssembly, TDbContext, TKey, TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken, TDataContainerKey>(this IServiceCollection services)
+        where TDbContext : ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+        where TKey : IEquatable<TKey>
+        where TUser : UserEntity<TKey>
+        where TRole : RoleEntity<TKey>
+        where TUserClaim : UserClaimEntity<TKey>
+        where TUserRole : UserRoleEntity<TKey>
+        where TUserLogin : UserLoginEntity<TKey>
+        where TRoleClaim : RoleClaimEntity<TKey>
+        where TUserToken : UserTokenEntity<TKey>
+        where TDataContainerKey : Enum
+    {
         // dbContext
         services.AddScoped(typeof(IDbContext), typeof(TDbContext));
 
