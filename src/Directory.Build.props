@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
     <PropertyGroup>
         <LangVersion>12.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -9,7 +9,7 @@
         <WarningsAsErrors>$(WarningsAsErrors);CS0114</WarningsAsErrors>
 
         <Authors>BytePlatform Contributors</Authors>
-        <Version>1.0.0-pre-27</Version>
+        <Version>1.0.0-pre-28</Version>
         <Description>Byte is a platform for building easy API.</Description>
         <RepositoryUrl>https://github.com/SmartClouds/BytePlatform</RepositoryUrl>
         <RepositoryType>Git</RepositoryType>
