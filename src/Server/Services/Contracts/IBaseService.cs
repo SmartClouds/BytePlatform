@@ -61,7 +61,7 @@ public interface IBaseService<TEntity, TKey> where TEntity : IEntity
     /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
-    ValueTask RemoveAsync(TKey key, CancellationToken cancellationToken);
+    ValueTask RemoveAsync(TKey key, string concurrencyStamp, CancellationToken cancellationToken);
 
     /// <summary>
     /// Remove entity

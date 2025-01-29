@@ -4,6 +4,8 @@ using BytePlatform.Server.Data.Contracts;
 using BytePlatform.Server.Models;
 using BytePlatform.Server.Services.Contracts;
 using BytePlatform.Server.Services.Helpers;
+using BytePlatform.Shared.Exceptions;
+using BytePlatform.Shared.Resources;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 
@@ -115,13 +117,16 @@ public abstract class BaseService<TEntity, TKey, TStrings> : IBaseService<TEntit
         }
     }
 
-    public virtual async ValueTask RemoveAsync(TKey key, CancellationToken cancellationToken)
+    public virtual async ValueTask RemoveAsync(TKey key, string concurrencyStamp, CancellationToken cancellationToken)
     {
         var entity = await Repository.GetByIdAsync(key, cancellationToken);
         if (entity is not null)
         {
             if (await EnsureValidationAndAccessAsync(OperationKind.Remove, entity, cancellationToken).ConfigureAwait(false) is false)
                 return;
+
+            if (entity is IRowVersionedEntity rowVersioned && rowVersioned.ConcurrencyStamp.SequenceEqual(Convert.FromBase64String(Uri.UnescapeDataString(concurrencyStamp))) is false)
+                throw new ConflictException(BytePlatformStrings.General.UpdateConcurrencyException);
 
             await OnRemovingAsync(entity, cancellationToken).ConfigureAwait(false);
             await ExecuteRemoveAsync(entity, cancellationToken).ConfigureAwait(false);

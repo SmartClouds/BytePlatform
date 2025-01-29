@@ -115,9 +115,9 @@ public abstract partial class DtoSetController<TKey, TDto, TDtoAdd, TDtoEdit, TE
         return Mapper.ToDto(entity);
     }
 
-    [HttpDelete("{id:guid}")]
-    public virtual async Task Delete(TKey id, CancellationToken cancellationToken)
+    [HttpDelete("{id:guid}/{concurrencyStamp}")]
+    public virtual async Task Delete(TKey id, string concurrencyStamp, CancellationToken cancellationToken)
     {
-        await EntityService.RemoveAsync(id, cancellationToken).ConfigureAwait(false);
+        await EntityService.RemoveAsync(id, concurrencyStamp, cancellationToken).ConfigureAwait(false);
     }
 }

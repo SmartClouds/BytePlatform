@@ -80,6 +80,8 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
     {
         try
         {
+            ReplaceOriginalConcurrencyStamp();
+
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
         catch (DbUpdateConcurrencyException exception)
@@ -137,6 +139,8 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
     {
         try
         {
+            ReplaceOriginalConcurrencyStamp();
+
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
         catch (DbUpdateConcurrencyException exception)
@@ -375,6 +379,23 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
                     .IsRowVersion();
 
             }
+        }
+    }
+
+    /// <summary>
+    /// https://github.com/dotnet/efcore/issues/35443
+    /// </summary>
+    private void ReplaceOriginalConcurrencyStamp()
+    {
+        ChangeTracker.DetectChanges();
+
+        foreach (var entityEntry in ChangeTracker.Entries().Where(e => e.State is EntityState.Modified))
+        {
+            if (entityEntry.CurrentValues.TryGetValue<object>("ConcurrencyStamp", out var currentConcurrencyStamp) is false
+                || currentConcurrencyStamp is not byte[])
+                continue;
+
+            entityEntry.OriginalValues.SetValues(new Dictionary<string, object> { { "ConcurrencyStamp", currentConcurrencyStamp } });
         }
     }
 
