@@ -68,18 +68,21 @@ public abstract class UserBaseService<TUserEntity, TEntity, TKey, TStrings> : Ba
     /// </summary>
     protected override async Task ExecuteRemoveAsync(TEntity entity, CancellationToken cancellationToken)
     {
-        if (entity is IArchivableEntity)
+        if (entity is IArchivableEntity archivableEntity)
         {
-            await ExecuteEditAsync(entity, cancellationToken);
+            archivableEntity.IsArchived = true;
+
+            await ExecuteEditAsync((TEntity)archivableEntity, cancellationToken);
         }
         else
         {
-            var roles = await UserManager.GetRolesAsync(entity).ConfigureAwait(false);
+            var userEntity = await UserManager.FindByIdAsync<TEntity>(entity.Id).ConfigureAwait(false) ?? throw new ResourceNotFoundException();
+            var roles = await UserManager.GetRolesAsync(userEntity).ConfigureAwait(false);
             if (roles.Any())
             {
-                await UserManager.RemoveFromRolesAsync(entity, roles);
+                await UserManager.RemoveFromRolesAsync(userEntity, roles);
             }
-            var result = await UserManager.DeleteAsync(entity).ConfigureAwait(false);
+            var result = await UserManager.DeleteAsync(userEntity).ConfigureAwait(false);
 
             if (result.Succeeded is false)
             {
