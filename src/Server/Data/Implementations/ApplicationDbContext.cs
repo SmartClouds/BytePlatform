@@ -10,7 +10,6 @@ using BytePlatform.Server.Models.Identity;
 using BytePlatform.Shared.Exceptions;
 using BytePlatform.Shared.Resources;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -343,7 +342,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
         return duplicateKeyValueRegex
                 .Match(input).Value
                 .Trim('(', ')')
-                .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+                .Split([","], StringSplitOptions.RemoveEmptyEntries);
     }
 
     private static string[] GetInvolvedColumnNames(string input)
