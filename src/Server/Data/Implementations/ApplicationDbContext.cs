@@ -59,7 +59,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
 
         ConfigureDecimalPrecision(builder);
 
-        ConcurrencyStamp(builder);
+        ConfigureConcurrencyStamp(builder);
 
         ConfigureCascades(builder);
 
@@ -79,7 +79,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
     {
         try
         {
-            ReplaceOriginalConcurrencyStamp();
+            SetConcurrencyStamp();
 
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
@@ -138,7 +138,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
     {
         try
         {
-            ReplaceOriginalConcurrencyStamp();
+            SetConcurrencyStamp();
 
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
@@ -366,7 +366,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
         return extractedEntityName.Remove(removeLength);
     }
 
-    private void ConcurrencyStamp(ModelBuilder modelBuilder)
+    private void ConfigureConcurrencyStamp(ModelBuilder modelBuilder)
     {
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -384,7 +384,7 @@ public abstract class ApplicationDbContext<TKey, TUser, TRole, TUserClaim, TUser
     /// <summary>
     /// https://github.com/dotnet/efcore/issues/35443
     /// </summary>
-    private void ReplaceOriginalConcurrencyStamp()
+    private void SetConcurrencyStamp()
     {
         ChangeTracker.DetectChanges();
 
