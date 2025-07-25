@@ -18,6 +18,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BytePlatform.Shared", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BytePlatform.Server", "src\Server\BytePlatform.Server.csproj", "{F05719D1-132E-45DB-B1B6-F46BD3A30E5F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BytePlatform.Server.Data", "src\Server.Data\BytePlatform.Server.Data.csproj", "{B537A0D7-7A83-B10A-AF7D-DF7A66416E6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BytePlatform.Tiny.Shared", "src\Tiny.Shared\BytePlatform.Tiny.Shared.csproj", "{9318513E-203A-85E1-317A-D4F41EC53629}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,14 @@ Global
 		{F05719D1-132E-45DB-B1B6-F46BD3A30E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F05719D1-132E-45DB-B1B6-F46BD3A30E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F05719D1-132E-45DB-B1B6-F46BD3A30E5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B537A0D7-7A83-B10A-AF7D-DF7A66416E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B537A0D7-7A83-B10A-AF7D-DF7A66416E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B537A0D7-7A83-B10A-AF7D-DF7A66416E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B537A0D7-7A83-B10A-AF7D-DF7A66416E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9318513E-203A-85E1-317A-D4F41EC53629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9318513E-203A-85E1-317A-D4F41EC53629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9318513E-203A-85E1-317A-D4F41EC53629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9318513E-203A-85E1-317A-D4F41EC53629}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
