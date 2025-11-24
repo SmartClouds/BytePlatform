@@ -1,7 +1,7 @@
 ﻿<Project>
   <ItemGroup>
     <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
-    <PackageVersion Include="BytePlatform.Shared" Version="1.0.0-pre-34" />
+    <PackageVersion Include="BytePlatform.Shared" Version="1.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
     <PackageVersion Include="Scrutor" Version="6.1.0" />
     <PackageVersion Include="Humanizer.Core" Version="3.0.1" />
